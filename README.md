@@ -28,7 +28,7 @@ After extracting the ZIP, open the extracted `cybershield-platform-main` folder 
 
 ## What is included
 
-- **Frontend:** Next.js App Router, React, and Tailwind CSS. The dashboard shows agent status, scan controls, network metrics, open ports, file-integrity alerts, and a live terminal.
+- **Frontend:** Next.js App Router, React, and Tailwind CSS. The dashboard includes summary cards, responsive scan and file-monitor controls, port presets, live network metrics, open-port JSON/CSV exports, integrity alerts, and a collapsible live activity console.
 - **Backend:** FastAPI REST and WebSocket APIs. PostgreSQL stores agents, jobs, and events; Redis carries agent commands and broadcasts live dashboard events.
 - **Local agent:** A Python process that connects to the API, reports host metrics, performs TCP port scans, and monitors file integrity with SHA-256 and `watchdog`.
 - **Docker Compose:** Starts PostgreSQL, Redis, the API, and its background worker. Host ports are bound to loopback for local development.
@@ -129,6 +129,13 @@ printf 'changed\n' >> ~/cybershield-fim-test/watch.txt
 ```
 
 The dashboard should report a modified-file alert. The agent’s default monitoring scope is your home directory. To monitor another approved directory, restart the agent with an additional `--fim-root /path/to/directory` option.
+
+## Dashboard shortcuts
+
+- **Port presets:** `Web: 80, 443`, `Dev: 3000, 8000`, and `Top 100` (`1-100`). Presets fill the Ports field; the target remains the host you entered.
+- **Open-port exports:** Use **JSON** or **CSV** in the Open ports panel to download the current scan results.
+- **Live Activity Console:** Expand the fixed bottom drawer to view and clear the agent’s streamed stdout/stderr messages. It follows new messages automatically unless you scroll up.
+- **Summary cards:** Track port-scan jobs, whether file monitoring is active, and warning/error integrity alerts.
 
 ## Project layout
 
