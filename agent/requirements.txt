@@ -1,0 +1,4 @@
+websockets>=14.0,<16
+psutil>=6.0
+watchdog>=5.0
+scapy>=2.6
