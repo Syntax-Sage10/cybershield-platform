@@ -1,6 +1,17 @@
-# CyberShield
+# 🚨 CyberShield
 
-CyberShield is a local-first security dashboard with a Next.js web interface, a FastAPI hub, PostgreSQL and Redis services, and a Python agent that runs on the machine being monitored. The dashboard receives live agent events over WebSockets.
+---
+
+**See network activity and file changes as they happen — with real scan results and integrity alerts.**
+
+CyberShield is a local-first security dashboard. A Python agent scans authorized network targets and watches files on the machine where it runs; a FastAPI hub streams its events to a Next.js dashboard. PostgreSQL and Redis run locally through Docker Compose.
+
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Backend](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Frontend](https://img.shields.io/badge/Frontend-Next.js-111111?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![Database](https://img.shields.io/badge/Database-PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Cache](https://img.shields.io/badge/Cache-Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![Download ZIP](https://img.shields.io/badge/Download-ZIP-2ea44f?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Syntax-Sage10/cybershield-platform/archive/refs/heads/main.zip)
 
 ## Download the project
 
