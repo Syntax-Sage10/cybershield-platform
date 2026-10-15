@@ -26,7 +26,7 @@ export function FimControls({ agentId, ready, activeJobId, onError }: Props) {
   }
 
   return (
-    <Card>
+    <Card className={running ? "border-emerald-500/25 shadow-[0_0_32px_rgba(16,185,129,.10)]" : ""}>
       <CardHeader>
         <CardTitle><FileLock2 className="h-4 w-4 text-emerald-400" aria-hidden /> File integrity monitor</CardTitle>
         {running && (
@@ -39,13 +39,17 @@ export function FimControls({ agentId, ready, activeJobId, onError }: Props) {
           <Input id="fim-path" value={path} onChange={(e) => setPath(e.target.value)} disabled={running} placeholder="/home/you/projects/app/config" />
         </div>
         {running ? (
-          <Button variant="destructive" className="w-full" disabled={busy} onClick={() => run(() => api.stopJob(activeJobId!))}>
-            <Square className="h-4 w-4" aria-hidden /> Stop monitoring
-          </Button>
+          <div className="flex justify-end border-t border-slate-800 pt-3">
+            <Button variant="destructive" disabled={busy} onClick={() => run(() => api.stopJob(activeJobId!))}>
+              <Square className="h-4 w-4" aria-hidden /> Stop monitoring
+            </Button>
+          </div>
         ) : (
-          <Button className="w-full" disabled={busy || !ready || !path.trim()} onClick={() => run(() => api.startJob(agentId!, "fim", { path: path.trim() }))}>
-            <FileLock2 className="h-4 w-4" aria-hidden /> Start monitoring
-          </Button>
+          <div className="flex justify-end border-t border-slate-800 pt-3">
+            <Button disabled={busy || !ready || !path.trim()} onClick={() => run(() => api.startJob(agentId!, "fim", { path: path.trim() }))}>
+              <FileLock2 className="h-4 w-4" aria-hidden /> Start monitoring
+            </Button>
+          </div>
         )}
         <p className="text-xs leading-relaxed text-zinc-500">
           Hashes every file with SHA-256, then reports creations, edits, deletions and permission changes as they happen. Changes made while the monitor was off are caught against the saved baseline on the next start.

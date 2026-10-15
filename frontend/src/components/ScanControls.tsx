@@ -17,6 +17,11 @@ interface Props {
 }
 
 const label = "mb-1 block text-xs text-zinc-400";
+const presets = [
+  { label: "Web: 80, 443", value: "80,443" },
+  { label: "Dev: 3000, 8000", value: "3000,8000" },
+  { label: "Top 100", value: "1-100" },
+];
 
 export function ScanControls({ agentId, ready, activeJobId, progress, onError }: Props) {
   const [target, setTarget] = useState("127.0.0.1");
@@ -35,7 +40,7 @@ export function ScanControls({ agentId, ready, activeJobId, progress, onError }:
   const done = !running && progress !== null && pct >= 100;
 
   return (
-    <Card>
+    <Card className={running ? "border-emerald-500/25 shadow-[0_0_32px_rgba(16,185,129,.10)]" : ""}>
       <CardHeader>
         <CardTitle><Radar className="h-4 w-4 text-amber-400" aria-hidden /> Port scanner</CardTitle>
       </CardHeader>
@@ -48,6 +53,19 @@ export function ScanControls({ agentId, ready, activeJobId, progress, onError }:
           <div>
             <label htmlFor="scan-ports" className={label}>Ports</label>
             <Input id="scan-ports" value={ports} onChange={(e) => setPorts(e.target.value)} disabled={running} placeholder="22,80,443,8000-9000" />
+            <div className="mt-2 flex flex-wrap gap-1.5" aria-label="Port scan presets">
+              {presets.map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  disabled={running}
+                  onClick={() => setPorts(preset.value)}
+                  className={`rounded-full border px-2.5 py-1 font-mono text-[10px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50 ${ports === preset.value ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300" : "border-slate-800 bg-white/[0.02] text-zinc-400 hover:border-emerald-500/30 hover:text-zinc-200"}`}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
           </div>
           <div>
             <label htmlFor="scan-conc" className={label}>Concurrency</label>
@@ -58,23 +76,25 @@ export function ScanControls({ agentId, ready, activeJobId, progress, onError }:
           <label htmlFor="scan-mode" className={label}>Method</label>
           <select
             id="scan-mode" value={mode} onChange={(e) => setMode(e.target.value as "connect" | "syn")} disabled={running}
-            className="h-9 w-full rounded-md border border-white/10 bg-black/30 px-3 text-sm text-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/30"
+            className="h-9 w-full rounded-md border border-slate-800 bg-black/30 px-3 text-sm text-zinc-100 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             <option value="connect">TCP connect (no privileges needed)</option>
             <option value="syn">SYN half-open (agent needs root/Administrator)</option>
           </select>
         </div>
 
-        {running ? (
-          <Button variant="destructive" className="w-full" disabled={busy} onClick={() => run(() => api.stopJob(activeJobId!))}>
-            <Square className="h-4 w-4" aria-hidden /> Stop scan
-          </Button>
-        ) : (
-          <Button variant="scan" className="w-full" disabled={busy || !ready || !target.trim()}
-            onClick={() => run(() => api.startJob(agentId!, "port_scan", { target: target.trim(), ports, mode, concurrency }))}>
-            <Radar className="h-4 w-4" aria-hidden /> Start scan
-          </Button>
-        )}
+        <div className="flex justify-end border-t border-slate-800 pt-3">
+          {running ? (
+            <Button variant="destructive" disabled={busy} onClick={() => run(() => api.stopJob(activeJobId!))}>
+              <Square className="h-4 w-4" aria-hidden /> Stop scan
+            </Button>
+          ) : (
+            <Button variant="scan" disabled={busy || !ready || !target.trim()}
+              onClick={() => run(() => api.startJob(agentId!, "port_scan", { target: target.trim(), ports, mode, concurrency }))}>
+              <Radar className="h-4 w-4" aria-hidden /> Start scan
+            </Button>
+          )}
+        </div>
 
         {(running || progress) && (
           <div aria-live="polite">

@@ -7,8 +7,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-emerald-500/90 text-zinc-950 shadow-[0_0_20px_rgba(16,185,129,.30)] hover:bg-emerald-400",
-        scan: "bg-amber-400/90 text-zinc-950 shadow-[0_0_20px_rgba(251,191,36,.30)] hover:bg-amber-300",
+        default: "bg-[#10b981] font-semibold text-zinc-950 shadow-[0_0_20px_rgba(16,185,129,.24)] hover:bg-emerald-300",
+        scan: "bg-[#06b6d4] font-semibold text-zinc-950 shadow-[0_0_20px_rgba(6,182,212,.22)] hover:bg-cyan-300",
         destructive: "bg-rose-500/90 text-white shadow-[0_0_20px_rgba(244,63,94,.30)] hover:bg-rose-400",
         outline: "border border-white/15 bg-white/5 text-zinc-200 hover:bg-white/10",
         ghost: "text-zinc-400 hover:bg-white/5 hover:text-zinc-100",

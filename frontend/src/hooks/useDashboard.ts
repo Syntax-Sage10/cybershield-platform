@@ -11,6 +11,7 @@ const WS_URL = `${process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8000"}/ws/da
 
 interface State {
   agents: Record<string, Agent>;
+  jobs: Job[];
   logs: LogLine[];
   ports: PortResult[];
   alerts: AlertItem[];
@@ -22,7 +23,7 @@ interface State {
 }
 
 const initial: State = {
-  agents: {}, logs: [], ports: [], alerts: [], progress: null, metrics: [],
+  agents: {}, jobs: [], logs: [], ports: [], alerts: [], progress: null, metrics: [],
   active: { port_scan: null, fim: null }, scanJobId: null, seq: 0,
 };
 
@@ -77,6 +78,7 @@ function reducer(s: State, a: Action): State {
       for (const j of a.jobs) if ((j.status === "queued" || j.status === "running") && !active[j.kind]) active[j.kind] = j.id;
       let next: State = {
         ...s, logs: [], ports: [], alerts: [], active,
+        jobs: a.jobs,
         agents: Object.fromEntries(a.agents.map((x) => [x.id, x])),
         scanJobId: a.jobs.find((j) => j.kind === "port_scan")?.id ?? null,
       };
@@ -85,7 +87,19 @@ function reducer(s: State, a: Action): State {
     }
     case "ws": {
       const m = a.msg;
-      if (m.type === "event") return applyEvent(s, m, true);
+      if (m.type === "event") {
+        const next = applyEvent(s, m, true);
+        if (m.kind !== "status" || !m.job_id) return next;
+        const status = String(m.data.status) as Job["status"];
+        const existing = next.jobs.some((job) => job.id === m.job_id);
+        if (existing) {
+          return { ...next, jobs: next.jobs.map((job) => job.id === m.job_id ? { ...job, status } : job) };
+        }
+        const kind = m.data.job_kind as JobKind;
+        if (kind !== "port_scan" && kind !== "fim") return next;
+        const job: Job = { id: m.job_id, agent_id: m.agent_id, kind, params: {}, status, created_at: m.ts };
+        return { ...next, jobs: [...next.jobs, job] };
+      }
       if (m.type === "metrics") return { ...s, metrics: cap([...s.metrics, { ts: m.ts, rx_bps: m.rx_bps, tx_bps: m.tx_bps, cpu: m.cpu }], 90) };
       if (m.type === "agent") {
         const prev = s.agents[m.agent_id];

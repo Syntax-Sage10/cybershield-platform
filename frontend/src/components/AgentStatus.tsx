@@ -2,8 +2,8 @@ import { ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Agent } from "@/lib/types";
 
-const Dot = ({ pulse }: { pulse?: boolean }) => (
-  <span className={`h-1.5 w-1.5 rounded-full bg-current ${pulse ? "animate-pulse" : ""}`} />
+const Dot = ({ online }: { online: boolean }) => (
+  <span className={`h-1.5 w-1.5 animate-pulse rounded-full ${online ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,.8)]" : "bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,.7)]"}`} />
 );
 
 export function AgentStatus({ connected, agent }: { connected: boolean; agent?: Agent }) {
@@ -22,18 +22,18 @@ export function AgentStatus({ connected, agent }: { connected: boolean; agent?: 
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <Badge variant={connected ? "safe" : "threat"}>
-          <Dot pulse={connected} /> Hub {connected ? "connected" : "unreachable"}
+          <Dot online={connected} /> Hub {connected ? "connected" : "unreachable"}
         </Badge>
         {agent ? (
           <>
             <Badge variant={agent.online ? "safe" : "muted"}>
-              <Dot pulse={agent.online} /> {agent.name} {agent.online ? "online" : "offline"}
+              <Dot online={agent.online} /> {agent.name} {agent.online ? "online" : "offline"}
             </Badge>
             <Badge variant={agent.is_admin ? "safe" : "scan"}>{agent.is_admin ? "Privileged" : "Unprivileged: SYN scans unavailable"}</Badge>
             <span className="font-mono text-xs text-zinc-500">{agent.platform}</span>
           </>
         ) : (
-          <Badge variant="muted">No agent registered</Badge>
+          <Badge variant="muted"><Dot online={false} /> No agent registered</Badge>
         )}
       </div>
     </header>
